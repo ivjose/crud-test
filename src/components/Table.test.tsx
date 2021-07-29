@@ -39,37 +39,73 @@ const sampleData = [
   },
 ]
 
-test('Should Table Render', () => {
-  const handleDelete = jest.fn()
-  const handleEdit = jest.fn()
-  render(<Table data={sampleData as DataProps[]} onDelete={handleDelete} onEdit={handleEdit} />)
+describe('Table Component', () => {
+  test('should display with data', () => {
+    const handleDelete = jest.fn()
+    const handleEdit = jest.fn()
+    render(<Table data={sampleData as DataProps[]} onDelete={handleDelete} onEdit={handleEdit} />)
 
-  const tableRow = screen.getAllByRole('row')
-  expect(tableRow).toHaveLength(5)
+    const tableRow = screen.getAllByRole('row')
+    expect(tableRow).toHaveLength(5)
 
-  const colName = within(tableRow[0]).getByText('Title')
-  expect(colName).toBeInTheDocument()
+    const colName = within(tableRow[0]).getByText('Title')
+    expect(colName).toBeInTheDocument()
 
-  const colStatus = within(tableRow[0]).getByText('Status')
-  expect(colStatus).toBeInTheDocument()
+    const colStatus = within(tableRow[0]).getByText('Status')
+    expect(colStatus).toBeInTheDocument()
 
-  const colAction = within(tableRow[0]).getByText('Action')
-  expect(colAction).toBeInTheDocument()
+    const colAction = within(tableRow[0]).getByText('Action')
+    expect(colAction).toBeInTheDocument()
 
-  const colTitle = within(tableRow[1]).getByText('The Tomorrow War')
-  expect(colTitle).toBeInTheDocument()
+    const colTitle = within(tableRow[1]).getByText('The Tomorrow War')
+    expect(colTitle).toBeInTheDocument()
 
-  const colActive = within(tableRow[1]).getByText('active')
-  expect(colActive).toHaveClass('text-green-800 bg-green-100')
+    const colActive = within(tableRow[1]).getByText('active')
+    expect(colActive).toHaveClass('text-green-800 bg-green-100')
 
-  const colInActive = within(tableRow[3]).getByText('inactive')
-  expect(colInActive).toHaveClass('text-red-800 bg-red-100')
+    const colInActive = within(tableRow[3]).getByText('inactive')
+    expect(colInActive).toHaveClass('text-red-800 bg-red-100')
+  })
 
-  const colOnDelete = within(tableRow[1]).getByText('delete')
-  userEvent.click(colOnDelete)
-  expect(handleDelete).toHaveBeenCalled()
+  test('should display no data results', () => {
+    const handleDelete = jest.fn()
+    const handleEdit = jest.fn()
+    render(<Table data={[] as DataProps[]} onDelete={handleDelete} onEdit={handleEdit} />)
 
-  const colOnEdit = within(tableRow[1]).getByText('edit')
-  userEvent.click(colOnEdit)
-  expect(handleEdit).toHaveBeenCalled()
+    const noResult = screen.getByText(/...No data Results/)
+    expect(noResult).toBeInTheDocument()
+  })
+
+  test('should have clickable action button', () => {
+    const handleDelete = jest.fn()
+    const handleEdit = jest.fn()
+    render(<Table data={sampleData as DataProps[]} onDelete={handleDelete} onEdit={handleEdit} />)
+
+    const tableRow = screen.getAllByRole('row')
+    expect(tableRow).toHaveLength(5)
+
+    const colAction = within(tableRow[0]).getByText('Action')
+    expect(colAction).toBeInTheDocument()
+
+    const colOnDelete = within(tableRow[1]).getByText('delete')
+    userEvent.click(colOnDelete)
+    expect(handleDelete).toHaveBeenCalled()
+
+    const colOnEdit = within(tableRow[1]).getByText('edit')
+    userEvent.click(colOnEdit)
+    expect(handleEdit).toHaveBeenCalled()
+  })
+
+  test('should display with children component', () => {
+    const handleDelete = jest.fn()
+    const handleEdit = jest.fn()
+    render(
+      <Table data={sampleData as DataProps[]} onDelete={handleDelete} onEdit={handleEdit}>
+        <div>Child Component</div>
+      </Table>
+    )
+
+    const childComponent = screen.getByText(/Child Component/)
+    expect(childComponent).toBeInTheDocument()
+  })
 })
