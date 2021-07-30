@@ -6,7 +6,7 @@ import InputField from './InputField'
 test('should render input', () => {
   const props = {
     onChange: () => jest.fn(),
-    value: '',
+    defaultValue: '',
     label: 'Full Name',
     name: 'name',
   }

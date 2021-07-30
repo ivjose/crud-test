@@ -1,12 +1,12 @@
 export type MoviePrams = {
-  title?: string
-  status?: 'active' | 'inactive'
+  name?: string
+  active?: 'true' | 'false'
 }
 
 export type MovieProps = {
   id: number
-  title: string
-  status: 'active' | 'inactive'
+  name: string
+  active: boolean
   description: string
   year: string
 }

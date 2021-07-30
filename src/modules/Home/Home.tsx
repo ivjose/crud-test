@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useQuery } from 'react-query'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { SearchIcon, PlusIcon } from '@heroicons/react/solid'
+import { PlusIcon } from '@heroicons/react/solid'
 import { useDebouncedCallback } from 'use-debounce'
 
 import InputField from '@components/InputField'
@@ -13,7 +13,7 @@ import { MovieProps } from './types'
 
 type Params = {
   q?: string
-  status?: string
+  active?: string
 }
 
 function Home() {
@@ -36,16 +36,16 @@ function Home() {
     if (value) {
       await router.push({
         pathname: '/',
-        query: { ...params, status: `${value}` },
+        query: { ...params, active: `${value}` },
       })
 
       setParams((prevState) => ({
         ...prevState,
-        status: `${value}`,
+        active: `${value}`,
       }))
     } else {
       const newParams = { ...params }
-      delete newParams['status']
+      delete newParams['active']
 
       await router.push({
         pathname: '/',
@@ -88,7 +88,7 @@ function Home() {
     <div>
       <Table data={data} onDelete={handleDelete} onEdit={handleEdit}>
         <>
-          <div className="text-right">
+          <div className="mb-4 text-right">
             <Link href="/movies/create">
               <a className="inline-flex items-center px-3 py-2 text-sm font-medium leading-4 text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 <PlusIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
@@ -102,14 +102,15 @@ function Home() {
                 label="Search"
                 name="search"
                 type="search"
-                value={searchText}
+                defaultValue={searchText}
                 onChange={handleSearchText}
               />
             </div>
             <div className="lg:w-52 lg:ml-4">
               <SelectOptionFields
                 label="Status"
-                name="status"
+                name="active"
+                defaultValue={params?.active}
                 onChange={handleFilterStatus}
                 options={[
                   {
@@ -118,11 +119,11 @@ function Home() {
                   },
                   {
                     label: 'Active',
-                    value: 'active',
+                    value: 'true',
                   },
                   {
                     label: 'Inactive',
-                    value: 'inactive',
+                    value: 'false',
                   },
                 ]}
               />

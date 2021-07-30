@@ -6,7 +6,7 @@ import SelectOptionFields from './SelectOptionFields'
 test('should render select option fields', () => {
   const props = {
     onChange: () => jest.fn(),
-    value: '',
+    defaultValue: '',
     label: 'Status',
     name: 'status',
     options: [

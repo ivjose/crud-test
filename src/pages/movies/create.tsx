@@ -1,5 +1,13 @@
+import Layout from '@components/Layout'
+
+import MoviesCreate from '@modules/Movies/MoviesCreate'
+
 function MoviesCreatePage() {
-  return <div>CreatePage</div>
+  return (
+    <Layout title="Add Movie">
+      <MoviesCreate />
+    </Layout>
+  )
 }
 
 export default MoviesCreatePage

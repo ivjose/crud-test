@@ -2,18 +2,18 @@ import { PencilAltIcon, TrashIcon } from '@heroicons/react/solid'
 
 export type DataProps = {
   id: number
-  title: string
-  status: 'active' | 'inactive'
+  name: string
+  active: boolean
 }
 
-type TableProps = {
-  data?: DataProps[]
+type TableProps<T> = {
+  data?: T[]
   onDelete?: (id: number) => void
   onEdit?: (id: number) => void
   children?: JSX.Element
 }
 
-function Table({ data = [], onDelete, onEdit, children }: TableProps) {
+function Table<T extends DataProps>({ data = [], onDelete, onEdit, children }: TableProps<T>) {
   return (
     <div>
       {children}
@@ -40,21 +40,19 @@ function Table({ data = [], onDelete, onEdit, children }: TableProps) {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {data.length > 0 ? (
-              data.map((item) => (
+              data?.map((item: T) => (
                 <tr key={item.id}>
                   <td className="px-6 py-4 text-lg font-medium text-gray-900 whitespace-nowrap">
-                    {item.title}
+                    {item.name}
                   </td>
 
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={`inline-flex px-2 text-xs font-semibold leading-5  rounded-full  ${
-                        item.status === 'active'
-                          ? 'text-green-800 bg-green-100 '
-                          : 'text-red-800 bg-red-100 '
+                        item.active ? 'text-green-800 bg-green-100 ' : 'text-red-800 bg-red-100 '
                       }`}
                     >
-                      {item.status}
+                      {item.active ? 'active' : 'inactive'}
                     </span>
                   </td>
 
