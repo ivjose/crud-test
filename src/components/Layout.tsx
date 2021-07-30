@@ -12,7 +12,7 @@ const Layout: React.FC<LayoutProps> = ({ children, title = 'Dashboard' }) => {
           </div>
         </header>
         <main>
-          <div className="pt-10 mx-auto max-w-7xl sm:px-6 lg:px-8">{children}</div>
+          <div className="px-4 pt-10 mx-auto max-w-7xl sm:px-6 lg:px-8">{children}</div>
         </main>
       </div>
     </div>

@@ -8,4 +8,15 @@ module.exports = {
     },
   },
   setupFilesAfterEnv: ['./src/jest.setup.ts'],
+  moduleNameMapper: {
+    '@components/(.*)': '<rootDir>/src/components/$1',
+    '@test-utils/(.*)': '<rootDir>/src/test-utils/$1',
+  },
+  moduleDirectories: [
+    'node_modules',
+    // add the directory with the test-utils.js file, for example:
+    'utils', // a utility folder
+    'test-utils',
+    __dirname, // the root directory
+  ],
 }
