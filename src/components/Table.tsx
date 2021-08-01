@@ -40,7 +40,7 @@ function Table<T extends DataProps>({ data = [], onDelete, onEdit, children }: T
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {data.length > 0 ? (
-              data?.map((item: T) => (
+              data.map((item: T) => (
                 <tr key={item.id}>
                   <td className="px-6 py-4 text-lg font-medium text-gray-900 whitespace-nowrap">
                     {item.name}

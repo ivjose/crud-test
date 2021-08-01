@@ -30,7 +30,11 @@ function InputField({
       <div className="relative mt-1 rounded-md shadow-sm">
         {type === 'search' && (
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-            <SearchIcon className="w-5 h-5 text-gray-400" aria-hidden="true" />
+            <SearchIcon
+              className="w-5 h-5 text-gray-400"
+              aria-hidden="true"
+              data-testid="searchIcon"
+            />
           </div>
         )}
 
