@@ -9,6 +9,8 @@ import InputField from '@components/InputField'
 import Table from '@components/Table'
 import SelectOptionFields from '@components/SelectOptionFields'
 import Modal from '@components/Modal'
+import AlertDisplay from '@components/AlertDisplay'
+
 import { getMovies, deleteMovieById } from './api'
 import { MovieProps } from './types'
 
@@ -23,6 +25,13 @@ function Home() {
   const [params, setParams] = useState<Params | null>(query || null)
   const [modal, setModal] = useState(false)
   const [deleteItems, setDeleteItems] = useState<number[]>([])
+  const [status, setStatus] = useState<{
+    state?: 'error' | 'success' | ''
+    message: string
+  }>({
+    state: '',
+    message: '',
+  })
 
   const { data, refetch } = useQuery(['movies', query], () => getMovies<MovieProps>(query))
 
@@ -106,6 +115,9 @@ function Home() {
   const handleReset = () => {
     setDeleteItems([])
     setModal(true)
+
+    setStatus({ state: 'success', message: 'Successfully Delete' })
+
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     refetch()
   }
@@ -130,7 +142,7 @@ function Home() {
         open={modal}
         setOpen={setModal}
         message={`Are sure you want to delete selected items(${deleteItems.length})`}
-        title="Delete Selected Item"
+        title="Delete Selected Items"
         actionButton={[
           {
             label: 'Yes',
@@ -145,7 +157,16 @@ function Home() {
           },
         ]}
       />
-      <Table data={data} onEdit={handleEdit} toggleCheckbox={toggleCheckbox}>
+
+      {status.state && status.message && (
+        <AlertDisplay status={status.state} message={status.message} />
+      )}
+      <Table
+        checkedIds={deleteItems}
+        data={data}
+        onEdit={handleEdit}
+        toggleCheckbox={toggleCheckbox}
+      >
         <>
           <div className="mb-4 space-x-4 text-right">
             <button

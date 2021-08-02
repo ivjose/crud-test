@@ -99,5 +99,35 @@ describe('Table Component', () => {
 
     const childComponent = screen.getByText(/Child Component/)
     expect(childComponent).toBeInTheDocument()
+
+    // const checkBox = screen.getByTestId('checkbox-element')
+    // expect(checkBox).not.toBeInTheDocument()
+  })
+
+  test('should display checkbox', () => {
+    const handleEdit = jest.fn()
+
+    const handleToggleCheckbox = jest.fn()
+
+    const props = {
+      data: sampleData,
+      onEdit: handleEdit,
+      checkedIds: [1],
+      toggleCheckbox: handleToggleCheckbox,
+    }
+    render(
+      <Table {...props}>
+        <div>Child Component</div>
+      </Table>
+    )
+
+    const checkBoxOne = screen.getByLabelText('movie-1')
+    expect(checkBoxOne).toBeChecked()
+
+    const checkBoxTwo = screen.getByLabelText('movie-2')
+    expect(checkBoxTwo).not.toBeChecked()
+
+    userEvent.click(checkBoxTwo)
+    expect(handleToggleCheckbox).toHaveBeenCalled()
   })
 })

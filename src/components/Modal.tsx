@@ -1,7 +1,6 @@
 import { Fragment, useRef, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationIcon } from '@heroicons/react/outline'
-import { type } from '@testing-library/user-event/dist/type'
 
 type ActionButton = {
   label: string
@@ -20,6 +19,8 @@ type ModalProps = {
 
 function Modal({ open, setOpen, message, title, actionButton }: ModalProps) {
   const cancelButtonRef = useRef(null)
+
+  if (!open) return <></>
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
@@ -75,8 +76,7 @@ function Modal({ open, setOpen, message, title, actionButton }: ModalProps) {
                 <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
                   {actionButton.map((button) => {
                     const colorType = {
-                      primary:
-                        'text-white bg-red-600 focus:ring-red-500 hover:bg-red-700 border-transparent',
+                      primary: 'bg-red-600 focus:ring-red-500 hover:bg-red-700 border-transparent',
                       secondary:
                         'text-gray-700 bg-white border-gray-300 hover:bg-gray-50 focus:ring-indigo-500',
                     }
@@ -85,7 +85,7 @@ function Modal({ open, setOpen, message, title, actionButton }: ModalProps) {
                       <button
                         key={button.label}
                         type="button"
-                        className={`inline-flex justify-center w-full px-4 py-2 text-base font-medium border  rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${
+                        className={`inline-flex justify-center w-full px-4 py-2 text-base font-medium border  rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm text-white  ${
                           colorType[button.type]
                         }`}
                         onClick={button.onClick}
@@ -97,23 +97,6 @@ function Modal({ open, setOpen, message, title, actionButton }: ModalProps) {
                   })}
                 </div>
               )}
-              {/* <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                <button
-                  type="button"
-                  className="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
-                  onClick={() => setOpen(false)}
-                >
-                  Deactivate
-                </button>
-                <button
-                  type="button"
-                  className="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
-                  onClick={() => setOpen(false)}
-                  ref={cancelButtonRef}
-                >
-                  Cancel
-                </button>
-              </div> */}
             </div>
           </Transition.Child>
         </div>

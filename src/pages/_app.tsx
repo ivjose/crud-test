@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { Hydrate, DehydratedState } from 'react-query/hydration'
 import type { AppProps } from 'next/app'
+
 import '../styles/globals.css'
 
 type Props = AppProps & DehydratedState

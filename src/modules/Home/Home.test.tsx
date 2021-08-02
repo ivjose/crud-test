@@ -1,7 +1,7 @@
 /* eslint-disable jest/no-export */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import userEvent from '@testing-library/user-event'
-
+import 'intersection-observer'
 import { screen, render, waitFor, act, within } from '../../test-utils/testing-library-utils'
 
 import Home from './Home'
@@ -21,6 +21,7 @@ describe('Home', () => {
     expect(screen.getByLabelText('Status')).toBeInTheDocument()
 
     expect(screen.getByRole('link', { name: /Movie/ })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /delete all/i })).toBeDisabled()
 
     const defaultTable = await screen.findAllByRole('row')
 
@@ -100,6 +101,87 @@ describe('Home', () => {
         { timeout: 1200 }
       )
     })
+  })
+
+  test('Delete item successfully', async () => {
+    render(<Home />)
+
+    const deleteAllButton = screen.getByRole('button', { name: /delete all/i })
+    expect(deleteAllButton).toBeDisabled()
+
+    await waitFor(async () => {
+      const tableData = await screen.findAllByRole('row')
+      expect(tableData).toHaveLength(4)
+    })
+
+    const checkBox = screen.getByLabelText('movie-1')
+    expect(checkBox).not.toBeChecked()
+    userEvent.click(checkBox)
+    expect(checkBox).toBeChecked()
+
+    const checkBox2 = screen.getByLabelText('movie-2')
+    expect(checkBox2).not.toBeChecked()
+    userEvent.click(checkBox2)
+    expect(checkBox2).toBeChecked()
+
+    expect(deleteAllButton).not.toBeDisabled()
+    userEvent.click(deleteAllButton)
+
+    const modalContainer = screen.getByRole('dialog')
+    expect(modalContainer).toBeInTheDocument()
+
+    const deleteModalButton = screen.getByRole('button', { name: 'Yes' })
+    expect(deleteModalButton).toBeInTheDocument()
+
+    const cancelModalButton = screen.getByRole('button', { name: 'Cancel' })
+    expect(cancelModalButton).toBeInTheDocument()
+
+    userEvent.click(deleteModalButton)
+
+    await waitFor(
+      async () => {
+        const successMessage = await screen.findByText('Successfully Delete')
+        expect(successMessage).toBeInTheDocument()
+      },
+      { timeout: 1200 }
+    )
+  })
+
+  test('Toggle modal delete and reselect checkbox', async () => {
+    render(<Home />)
+
+    const deleteAllButton = screen.getByRole('button', { name: /delete all/i })
+    expect(deleteAllButton).toBeInTheDocument()
+
+    await waitFor(async () => {
+      const tableData = await screen.findAllByRole('row')
+      expect(tableData).toHaveLength(4)
+    })
+
+    const checkBoxAll = screen.getAllByRole('checkbox')
+    expect(checkBoxAll).toHaveLength(3)
+
+    userEvent.click(checkBoxAll[1])
+    expect(checkBoxAll[1]).toBeChecked()
+
+    userEvent.click(checkBoxAll[1])
+
+    expect(checkBoxAll[1]).not.toBeChecked()
+
+    userEvent.click(checkBoxAll[2])
+    expect(checkBoxAll[2]).toBeChecked()
+
+    userEvent.click(deleteAllButton)
+
+    const modalDialog = screen.getByRole('dialog')
+    expect(modalDialog).toBeInTheDocument()
+
+    const cancelModalButton = screen.getByRole('button', { name: 'Cancel' })
+    expect(cancelModalButton).toBeInTheDocument()
+
+    userEvent.click(cancelModalButton)
+
+    expect(modalDialog).not.toBeInTheDocument()
   })
 
   test('filter status inactive', async () => {

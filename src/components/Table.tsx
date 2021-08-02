@@ -1,4 +1,4 @@
-import { PencilAltIcon, TrashIcon } from '@heroicons/react/solid'
+import { PencilAltIcon } from '@heroicons/react/solid'
 
 export type DataProps = {
   id: number
@@ -11,12 +11,14 @@ type TableProps<T> = {
   onEdit?: (id: number) => void
   children?: JSX.Element
   toggleCheckbox?: (event: React.FormEvent<Element>) => void
+  checkedIds?: number[]
 }
 
 function Table<T extends DataProps>({
   data = [],
   onEdit,
   toggleCheckbox,
+  checkedIds = [],
   children,
 }: TableProps<T>) {
   return (
@@ -61,7 +63,13 @@ function Table<T extends DataProps>({
                         type="checkbox"
                         className="w-4 border-gray-300 rounded cursor-pointer h-4text-indigo-600 focus:ring-indigo-500"
                         onChange={toggleCheckbox}
+                        checked={checkedIds.includes(item.id)}
+                        data-testid="checkbox-element"
                       />
+                      <label
+                        htmlFor={`movie-${item.id}`}
+                        className="sr-only"
+                      >{`movie-${item.id}`}</label>
                     </td>
                   )}
 

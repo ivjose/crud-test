@@ -17,6 +17,7 @@ module.exports = {
     // add the directory with the test-utils.js file, for example:
     'utils', // a utility folder
     'test-utils',
+    'Intersection-observer',
     __dirname, // the root directory
   ],
 }

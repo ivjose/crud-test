@@ -89,6 +89,10 @@ export const handlers = [
       ])
     )
   }),
+
+  rest.delete('http://localhost:3030/movies/:moviesId', (req, res, ctx) => {
+    return res(ctx.json({}))
+  }),
 ]
 
 // const q = req.url.searchParams.get('q')
