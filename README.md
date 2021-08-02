@@ -23,9 +23,9 @@ yarn server
 3. Run the client application and this will open [http://localhost:3000](http://localhost:3030)
 
 ```bash
-npm start
+npm run dev
 # or
-yarn start
+yarn dev
 ```
 
 4. Runs the test watcher in an interactive mode.
