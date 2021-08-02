@@ -9,14 +9,29 @@ const CustomToggle = () => {
 
   return <Toggle checked={value} onChange={(status) => setValue(status)} label="toggle" />
 }
-test('toggle', () => {
-  render(<CustomToggle />)
+describe('Toggle', () => {
+  test('should render', () => {
+    render(<CustomToggle />)
 
-  const toggleBtn = screen.getByTestId('toggle-btn')
-  expect(toggleBtn).toBeInTheDocument()
-  expect(toggleBtn).toHaveClass('bg-gray-200')
+    const toggleBtn = screen.getByTestId('toggle-btn')
+    expect(toggleBtn).toBeInTheDocument()
 
-  userEvent.click(toggleBtn)
+    expect(toggleBtn).toHaveAttribute('aria-checked', 'false')
+    expect(toggleBtn).toHaveClass('bg-gray-200')
 
-  expect(toggleBtn).toHaveClass('bg-indigo-600')
+    userEvent.click(toggleBtn)
+    // debug()
+    expect(toggleBtn).toHaveAttribute('aria-checked', 'true')
+    expect(toggleBtn).toHaveClass('bg-indigo-600')
+  })
+
+  test('default value', () => {
+    render(<Toggle onChange={() => jest.fn()} label="toggle" />)
+
+    const toggleBtn = screen.getByTestId('toggle-btn')
+    expect(toggleBtn).toBeInTheDocument()
+
+    expect(toggleBtn).toHaveAttribute('aria-checked', 'false')
+    expect(toggleBtn).toHaveClass('bg-gray-200')
+  })
 })
