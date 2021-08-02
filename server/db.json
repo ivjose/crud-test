@@ -85,34 +85,6 @@
       "active": false,
       "description": "When a mafia accountant is taken hostage on his beat, a police officer – wracked by guilt from a prior stint as a negotiator – must negotiate the standoff, even as his own family is held captive by the mob.",
       "category": "action"
-    },
-    {
-      "id": 9,
-      "name": "asdasd",
-      "description": "asdasd",
-      "category": "drama",
-      "active": true
-    },
-    {
-      "id": 10,
-      "name": "asdasd",
-      "description": "asdasd",
-      "category": "drama",
-      "active": false
-    },
-    {
-      "id": 11,
-      "name": "Hello World",
-      "description": "asdasd",
-      "category": "action",
-      "active": false
-    },
-    {
-      "id": 12,
-      "name": "Success",
-      "description": "Hello World",
-      "category": "action",
-      "active": true
     }
   ]
 }
