@@ -1,4 +1,4 @@
-# University List App
+# Movies List App
 
 This application build in React
 
