@@ -27,3 +27,21 @@ npm start
 # or
 yarn start
 ```
+
+4. Runs the test watcher in an interactive mode.
+
+watch mode
+
+```bash
+npm test
+# or
+yarn test
+```
+
+test coverage
+
+```bash
+npm run test:coverage
+# or
+yarn test:coverage
+```
