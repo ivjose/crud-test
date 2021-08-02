@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useQuery } from 'react-query'
 import { useRouter } from 'next/router'
@@ -31,9 +31,7 @@ function MoviesCreate({ moviesId }: MoviesCreateProps) {
     getMovieById<MovieProps>(moviesId)
   )
 
-  const [fields, setFields] = useState<FieldTypes>(
-    moviesId ? { ...dataMovieById } : { ...DEFAULT_VALUE, active: false }
-  )
+  const [fields, setFields] = useState<FieldTypes>({ ...DEFAULT_VALUE, active: false })
   const [errorFields, setErrorFields] = useState(DEFAULT_VALUE)
   const [status, setStatus] = useState<{
     state?: 'error' | 'success' | 'default' | '' | 'loading'
@@ -43,6 +41,15 @@ function MoviesCreate({ moviesId }: MoviesCreateProps) {
     message: '',
   })
   const [modal, setModal] = useState(false)
+
+  useEffect(() => {
+    if (dataMovieById) {
+      setFields({ ...dataMovieById })
+    }
+    // return () => {
+    //   cleanup
+    // }
+  }, [dataMovieById])
 
   const checkError = (name: string, value: string | number | boolean): string => {
     let errorMessage = ''
@@ -109,11 +116,14 @@ function MoviesCreate({ moviesId }: MoviesCreateProps) {
         })
       }
 
-      setStatus({ state: 'success', message: 'Successfully save' })
+      setStatus({
+        state: 'success',
+        message: moviesId ? 'Successfully updated' : 'Successfully save',
+      })
 
       !moviesId && setFields({ ...DEFAULT_VALUE, active: false })
     } catch (error) {
-      setStatus({ state: 'error', message: 'Failed to save' })
+      setStatus({ state: 'error', message: moviesId ? 'Failed to update' : 'Failed to save' })
     }
   }
 
@@ -137,6 +147,10 @@ function MoviesCreate({ moviesId }: MoviesCreateProps) {
   }
 
   const toggleModal = () => setModal((prevState) => !prevState)
+
+  // console.log(dataMovieById, fields, 'DDDDDDDDDDDDDDDDDDDDDDDd')
+
+  // console.log(moviesId)
 
   return (
     <div>
@@ -236,4 +250,4 @@ function MoviesCreate({ moviesId }: MoviesCreateProps) {
   )
 }
 
-export default MoviesCreate
+export default React.memo(MoviesCreate)
