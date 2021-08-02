@@ -16,3 +16,9 @@ export async function getMovieById<T>(id?: string): Promise<T | null> {
 
   return response.data
 }
+
+export async function deleteMovieById<T>(id: string): Promise<T> {
+  const response = await axios.delete<T>(`http://localhost:3030/movies/${id}`)
+
+  return response.data
+}

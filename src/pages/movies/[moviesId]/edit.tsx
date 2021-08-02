@@ -9,19 +9,15 @@ import MoviesCreate from '@modules/Movies/MoviesCreate'
 import { MoviesCreateProps } from '@modules/Movies/MoviesCreate/types'
 import { getMovieById } from '@modules/Home/api'
 
-const MoviesEditPage = ({ moviesId }: MoviesCreateProps) => {
-  console.log(moviesId)
-
-  return (
-    <Layout title="Edit movie">
-      <MoviesCreate moviesId={moviesId} />{' '}
-    </Layout>
-  )
-}
-
 type Params = {
   moviesId: string
 }
+
+const MoviesEditPage = ({ moviesId }: MoviesCreateProps) => (
+  <Layout title="Edit movie">
+    <MoviesCreate moviesId={moviesId} />
+  </Layout>
+)
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const { moviesId } = params as Params

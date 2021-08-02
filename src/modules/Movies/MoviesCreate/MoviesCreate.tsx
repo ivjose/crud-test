@@ -1,17 +1,18 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import { useQuery } from 'react-query'
+import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { ChevronLeftIcon } from '@heroicons/react/solid'
+import { ChevronLeftIcon, TrashIcon } from '@heroicons/react/solid'
 
 import InputField from '@components/InputField'
 import SelectOptionFields from '@components/SelectOptionFields'
 import AlertDisplay from '@components/AlertDisplay'
-
 import Toggle from '@components/Toggle'
+import Modal from '@components/Modal'
 
 import { MovieProps } from '@modules/Home/types'
-import { getMovieById } from '@modules/Home/api'
+import { getMovieById, deleteMovieById } from '@modules/Home/api'
 import { getCategory } from './api'
 
 import { MoviesCreateProps, FieldTypes } from './types'
@@ -24,8 +25,8 @@ const DEFAULT_VALUE = {
 }
 
 function MoviesCreate({ moviesId }: MoviesCreateProps) {
+  const router = useRouter()
   const { data: dataCategory } = useQuery(['category'], getCategory)
-
   const { data: dataMovieById } = useQuery(['moviesId', moviesId], () =>
     getMovieById<MovieProps>(moviesId)
   )
@@ -41,6 +42,7 @@ function MoviesCreate({ moviesId }: MoviesCreateProps) {
     state: '',
     message: '',
   })
+  const [modal, setModal] = useState(false)
 
   const checkError = (name: string, value: string | number | boolean): string => {
     let errorMessage = ''
@@ -90,19 +92,20 @@ function MoviesCreate({ moviesId }: MoviesCreateProps) {
       return null
     }
 
-    console.log(errorFields, fields, 'DDDDDDDDDdd')
     setStatus({ state: 'loading', message: '' })
     try {
-      const response = await axios.get<MovieProps[]>('http://localhost:3030/movies')
-
       if (moviesId) {
         await axios.put(`http://localhost:3030/movies/${moviesId}`, {
           ...fields,
         })
       } else {
+        const response = await axios.get<MovieProps[]>('http://localhost:3030/movies')
+
+        const lastId = response.data[response.data.length - 1]
+
         await axios.post('http://localhost:3030/movies', {
           ...fields,
-          id: response.data.length + 1,
+          id: lastId.id + 1,
         })
       }
 
@@ -114,17 +117,66 @@ function MoviesCreate({ moviesId }: MoviesCreateProps) {
     }
   }
 
-  console.log(fields, 'DDDDDDDDDDDDd')
+  const handleTriggerDeleteApi = async () => {
+    if (moviesId) {
+      try {
+        await deleteMovieById<string>(`${moviesId}`)
+
+        setStatus({ state: 'success', message: 'Successfully Delete' })
+      } catch (error) {
+        setStatus({ state: 'error', message: 'Failed to Delete' })
+      } finally {
+        toggleModal()
+
+        setTimeout(() => {
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
+          router.push('/')
+        }, 1500)
+      }
+    }
+  }
+
+  const toggleModal = () => setModal((prevState) => !prevState)
 
   return (
     <div>
-      <div className="mb-4">
+      <Modal
+        open={modal}
+        setOpen={setModal}
+        message={`Are sure you want to delete `}
+        title="Delete"
+        actionButton={[
+          {
+            label: 'Yes',
+            type: 'primary',
+            onClick: handleTriggerDeleteApi,
+          },
+          {
+            label: 'Cancel',
+            type: 'secondary',
+            onClick: toggleModal,
+            cancel: true,
+          },
+        ]}
+      />
+      <div className="flex justify-between mb-4">
         <Link href="/">
           <a className="inline-flex items-center px-3 py-2 text-sm font-medium leading-4 text-white bg-gray-600 border border-transparent rounded-md shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
             <ChevronLeftIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
             Back
           </a>
         </Link>
+
+        {moviesId && (
+          <button
+            type="button"
+            onClick={toggleModal}
+            className="inline-flex items-center px-3 py-2 text-sm font-medium leading-4 text-white bg-indigo-600 border border-transparent rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 hover:bg-indigo-700 focus:ring-indigo-500"
+          >
+            <TrashIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
+            Delete
+          </button>
+        )}
       </div>
       {status.state && status.message && (
         <AlertDisplay status={status.state} message={status.message} />

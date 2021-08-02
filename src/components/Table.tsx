@@ -8,12 +8,17 @@ export type DataProps = {
 
 type TableProps<T> = {
   data?: T[]
-  onDelete?: (id: number) => void
   onEdit?: (id: number) => void
   children?: JSX.Element
+  toggleCheckbox?: (event: React.FormEvent<Element>) => void
 }
 
-function Table<T extends DataProps>({ data = [], onDelete, onEdit, children }: TableProps<T>) {
+function Table<T extends DataProps>({
+  data = [],
+  onEdit,
+  toggleCheckbox,
+  children,
+}: TableProps<T>) {
   return (
     <div>
       {children}
@@ -21,6 +26,12 @@ function Table<T extends DataProps>({ data = [], onDelete, onEdit, children }: T
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
+              {toggleCheckbox && (
+                <th className="w-12">
+                  <span className="sr-only">checkbox</span>
+                </th>
+              )}
+
               <th
                 scope="col"
                 className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase"
@@ -42,6 +53,18 @@ function Table<T extends DataProps>({ data = [], onDelete, onEdit, children }: T
             {data.length > 0 ? (
               data.map((item: T) => (
                 <tr key={item.id}>
+                  {toggleCheckbox && (
+                    <td className="px-6 py-4 ">
+                      <input
+                        id={`movie-${item.id}`}
+                        name={`movie-${item.id}`}
+                        type="checkbox"
+                        className="w-4 border-gray-300 rounded cursor-pointer h-4text-indigo-600 focus:ring-indigo-500"
+                        onChange={toggleCheckbox}
+                      />
+                    </td>
+                  )}
+
                   <td className="px-6 py-4 text-lg font-medium text-gray-900 whitespace-nowrap">
                     {item.name}
                   </td>
@@ -61,18 +84,10 @@ function Table<T extends DataProps>({ data = [], onDelete, onEdit, children }: T
                       <button
                         onClick={() => onEdit && onEdit(item.id)}
                         type="button"
-                        className="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-400 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:text-indigo-500 focus:border-indigo-500"
+                        className="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-400 bg-white border border-gray-300 rounded hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:text-indigo-500 focus:border-indigo-500"
                       >
                         <span className="sr-only">edit</span>
                         <PencilAltIcon className="w-4 h-4" aria-hidden="true" />
-                      </button>
-                      <button
-                        onClick={() => onDelete && onDelete(item.id)}
-                        type="button"
-                        className="relative inline-flex items-center px-2 py-2 -ml-px text-sm font-medium text-gray-400 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:text-indigo-500 focus:border-indigo-500"
-                      >
-                        <span className="sr-only">delete</span>
-                        <TrashIcon className="w-4 h-4" aria-hidden="true" />
                       </button>
                     </span>
                   </td>

@@ -41,9 +41,8 @@ const sampleData = [
 
 describe('Table Component', () => {
   test('should display with data', () => {
-    const handleDelete = jest.fn()
     const handleEdit = jest.fn()
-    render(<Table data={sampleData} onDelete={handleDelete} onEdit={handleEdit} />)
+    render(<Table data={sampleData} onEdit={handleEdit} />)
 
     const tableRow = screen.getAllByRole('row')
     expect(tableRow).toHaveLength(5)
@@ -68,18 +67,16 @@ describe('Table Component', () => {
   })
 
   test('should display no data results', () => {
-    const handleDelete = jest.fn()
     const handleEdit = jest.fn()
-    render(<Table data={[] as DataProps[]} onDelete={handleDelete} onEdit={handleEdit} />)
+    render(<Table data={[] as DataProps[]} onEdit={handleEdit} />)
 
     const noResult = screen.getByText(/...No data Results/)
     expect(noResult).toBeInTheDocument()
   })
 
   test('should have clickable action button', () => {
-    const handleDelete = jest.fn()
     const handleEdit = jest.fn()
-    render(<Table data={sampleData} onDelete={handleDelete} onEdit={handleEdit} />)
+    render(<Table data={sampleData} onEdit={handleEdit} />)
 
     const tableRow = screen.getAllByRole('row')
     expect(tableRow).toHaveLength(5)
@@ -87,20 +84,15 @@ describe('Table Component', () => {
     const colAction = within(tableRow[0]).getByText('Action')
     expect(colAction).toBeInTheDocument()
 
-    const colOnDelete = within(tableRow[1]).getByText('delete')
-    userEvent.click(colOnDelete)
-    expect(handleDelete).toHaveBeenCalled()
-
     const colOnEdit = within(tableRow[1]).getByText('edit')
     userEvent.click(colOnEdit)
     expect(handleEdit).toHaveBeenCalled()
   })
 
   test('should display with children component', () => {
-    const handleDelete = jest.fn()
     const handleEdit = jest.fn()
     render(
-      <Table data={sampleData} onDelete={handleDelete} onEdit={handleEdit}>
+      <Table data={sampleData} onEdit={handleEdit}>
         <div>Child Component</div>
       </Table>
     )
