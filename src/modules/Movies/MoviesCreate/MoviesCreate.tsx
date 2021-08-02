@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import { useQuery } from 'react-query'
 import Link from 'next/link'
-import { PlusIcon, ChevronLeftIcon } from '@heroicons/react/solid'
+import { ChevronLeftIcon } from '@heroicons/react/solid'
 
 import InputField from '@components/InputField'
 import SelectOptionFields from '@components/SelectOptionFields'
@@ -11,17 +11,28 @@ import AlertDisplay from '@components/AlertDisplay'
 import Toggle from '@components/Toggle'
 
 import { MovieProps } from '@modules/Home/types'
-
+import { getMovieById } from '@modules/Home/api'
 import { getCategory } from './api'
 
+import { MoviesCreateProps, FieldTypes } from './types'
+
 const DEFAULT_VALUE = {
+  id: 1,
   name: '',
   description: '',
   category: '',
 }
 
-function MoviesCreate() {
-  const [fields, setFields] = useState({ ...DEFAULT_VALUE, active: false })
+function MoviesCreate({ moviesId }: MoviesCreateProps) {
+  const { data: dataCategory } = useQuery(['category'], getCategory)
+
+  const { data: dataMovieById } = useQuery(['moviesId', moviesId], () =>
+    getMovieById<MovieProps>(moviesId)
+  )
+
+  const [fields, setFields] = useState<FieldTypes>(
+    moviesId ? { ...dataMovieById } : { ...DEFAULT_VALUE, active: false }
+  )
   const [errorFields, setErrorFields] = useState(DEFAULT_VALUE)
   const [status, setStatus] = useState<{
     state?: 'error' | 'success' | 'default' | '' | 'loading'
@@ -31,9 +42,7 @@ function MoviesCreate() {
     message: '',
   })
 
-  const { data: dataCategory } = useQuery(['category'], getCategory)
-
-  const checkError = (name: string, value: string | boolean): string => {
+  const checkError = (name: string, value: string | number | boolean): string => {
     let errorMessage = ''
 
     if (!value) {
@@ -43,7 +52,7 @@ function MoviesCreate() {
     return errorMessage
   }
 
-  const updateErrors = (name: string, value: string | boolean): void | null => {
+  const updateErrors = (name: string, value: string | number | boolean): void | null => {
     if (name === 'active') return null
     const error = checkError(name, value)
 
@@ -86,20 +95,26 @@ function MoviesCreate() {
     try {
       const response = await axios.get<MovieProps[]>('http://localhost:3030/movies')
 
-      await axios.post('http://localhost:3030/movies', {
-        id: response.data.length + 1,
-        ...fields,
-      })
+      if (moviesId) {
+        await axios.put(`http://localhost:3030/movies/${moviesId}`, {
+          ...fields,
+        })
+      } else {
+        await axios.post('http://localhost:3030/movies', {
+          ...fields,
+          id: response.data.length + 1,
+        })
+      }
 
       setStatus({ state: 'success', message: 'Successfully save' })
 
-      setFields({ ...DEFAULT_VALUE, active: false })
+      !moviesId && setFields({ ...DEFAULT_VALUE, active: false })
     } catch (error) {
       setStatus({ state: 'error', message: 'Failed to save' })
     }
   }
 
-  console.log(status)
+  console.log(fields, 'DDDDDDDDDDDDd')
 
   return (
     <div>

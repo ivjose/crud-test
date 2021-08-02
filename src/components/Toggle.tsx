@@ -5,12 +5,12 @@ function classNames(...classes: string[]) {
 }
 
 type Props = {
-  checked: boolean
+  checked?: boolean
   onChange: (val: boolean) => void
   label: string
 }
 
-function Toggle({ checked, onChange, label }: Props) {
+function Toggle({ checked = false, onChange, label }: Props) {
   return (
     <Switch.Group as="div" className="flex items-center">
       <Switch

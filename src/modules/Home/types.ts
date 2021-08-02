@@ -8,5 +8,5 @@ export type MovieProps = {
   name: string
   active: boolean
   description: string
-  year: string
+  category: string
 }

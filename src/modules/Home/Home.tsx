@@ -27,8 +27,11 @@ function Home() {
     console.log(id, 'Delete')
   }
 
-  const handleEdit = (id: number) => {
+  const handleEdit = async (id: number) => {
     console.log(id, 'Edit')
+    await router.push({
+      pathname: `/movies/${id}/edit`,
+    })
   }
 
   const handleFilterStatus = async (event: React.FormEvent<HTMLSelectElement>): Promise<void> => {
